@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
     Timer(const Duration(seconds: 2), () async {
       String? keyword = null;
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return keyword == null ? HomePage() : HomePage();
       }));
     });
