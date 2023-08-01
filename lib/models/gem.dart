@@ -5,8 +5,8 @@ class Gem {
   String? secret;
   String? type;
   String? imageurl;
-  DateTime? created_at;
-  DateTime? updated_at;
+  String? created_at;
+  String? updated_at;
 
   Gem(
       {this.id,

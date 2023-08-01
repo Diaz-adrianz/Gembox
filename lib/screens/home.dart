@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gemboxapp/models/gem.dart';
 import 'package:gemboxapp/screens/bs_form.dart';
+import 'package:gemboxapp/services/database_gems.dart';
 import 'package:gemboxapp/themes/color.dart';
 import 'package:gemboxapp/widgets/card_gem.dart';
+import 'package:gemboxapp/widgets/confirmation_dialog.dart';
 import 'package:remixicon/remixicon.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,25 +20,16 @@ class _HomePageState extends State<HomePage> {
   TextEditingController search_ctrl = TextEditingController(text: '');
 
   // STATES
-  List<Gem> _gems = [
-    // Gems(
-    //     id: '1',
-    //     name: "Google",
-    //     secret: '12345',
-    //     type: 'Pin',
-    //     imageurl:
-    //         'https://banner2.cleanpng.com/20180521/ers/kisspng-google-logo-5b02bbe1d5c6e0.2384399715269058258756.jpg'),
-  ];
+  List<Gem> _gems = [];
   String? _keyword;
 
   // UTILITIES
   bool validateInput(String str) {
-    if (str.isEmpty) return false;
+    if (str.isEmpty || !str.contains(' ')) return false;
 
-    List<String> words = str.split(' ');
-    if (words.length < 2) return false;
+    if (str.split(' ')[1] == '') return false;
 
-    if (words.first != _keyword) return false;
+    if (str.split(' ')[0] != _keyword) return false;
 
     return true;
   }
@@ -44,8 +38,7 @@ class _HomePageState extends State<HomePage> {
     List<Gem> results = [];
 
     if (validateInput(val)) {
-      // results = await DBgems.listGems(q.split(' ').sublist(1).join(' '));
-      results = [];
+      results = await DatabaseGems.list(val.split(' ').sublist(1).join(' '));
     }
 
     setState(() {
@@ -53,9 +46,46 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void delGem(BuildContext ctx, {String? id}) {}
+  void delGem(BuildContext ctx, {String? id}) async {
+    bool confirm = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const ConfirmDialog(
+              'Delete permanently this Gem?', 'You cannot undo this action');
+        });
 
-  void openGem(BuildContext ctx, {String? id}) {}
+    if (!confirm) return;
+
+    bool res = true;
+
+    if (res) {
+      setState(() {
+        _gems = _gems.where((Gem gem) => gem.id != id).toList();
+      });
+    }
+
+    Fluttertoast.showToast(msg: res ? 'Gem deleted' : 'Something wrong :(');
+  }
+
+  void openGem(BuildContext ctx, {String? id}) {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: true,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return FormGem(id);
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      _keyword = 'dev';
+    });
+  }
 
   @override
   void dispose() {
@@ -69,13 +99,17 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: MyColors.SURFACE,
       body: Stack(
         children: [
-          ListView(
-            padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-            children: [
-              for (Gem dat in _gems)
-                CardGem(data: dat, delGem: delGem, openGem: openGem)
-            ],
-          ),
+          RefreshIndicator(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+                children: [
+                  for (Gem dat in _gems)
+                    CardGem(data: dat, delGem: delGem, openGem: openGem)
+                ],
+              ),
+              onRefresh: () async {
+                searchChanged(search_ctrl.text);
+              }),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -90,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                   color: MyColors.WHITE,
                   borderRadius: BorderRadius.all(Radius.circular(16))),
-              margin: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
 
               /////// SEARCH BAR ///////
               child: TextField(
@@ -121,7 +155,8 @@ class _HomePageState extends State<HomePage> {
                                 isDismissible: false,
                                 enableDrag: true,
                                 isScrollControlled: true,
-                                builder: (BuildContext context) => FormGem());
+                                builder: (BuildContext context) =>
+                                    const FormGem(null));
                           },
                           child: const Icon(
                             Remix.add_fill,

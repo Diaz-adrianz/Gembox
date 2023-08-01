@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gemboxapp/models/gem.dart';
+import 'package:gemboxapp/services/database_gems.dart';
 import 'package:gemboxapp/themes/color.dart';
 import 'package:gemboxapp/widgets/button_filled.dart';
 import 'package:gemboxapp/widgets/image_network.dart';
 import 'package:gemboxapp/widgets/spacers.dart';
+import 'package:intl/intl.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 class FormGem extends StatefulWidget {
   final String? id;
 
-  const FormGem({super.key, this.id});
+  const FormGem(this.id, {super.key});
 
   @override
   State<FormGem> createState() => _FormGemState();
@@ -20,11 +24,13 @@ class FormGem extends StatefulWidget {
 class _FormGemState extends State<FormGem> {
   // CONTROLLERS TEXTFIELD
   TextEditingController name_ctrl = TextEditingController();
+  TextEditingController identifier_ctrl = TextEditingController();
   TextEditingController secret_ctrl = TextEditingController();
   TextEditingController imageurl_ctrl = TextEditingController();
 
   // STATES
   String _name = '';
+  String _identifier = '';
   String _secret = '';
   String _imageurl = '';
   String _type_selected = 'Pin';
@@ -43,6 +49,7 @@ class _FormGemState extends State<FormGem> {
     bool is_validate = (_name.isNotEmpty &&
         _secret.isNotEmpty &&
         _imageurl.isNotEmpty &&
+        _identifier.isNotEmpty &&
         _type_selected.isNotEmpty);
 
     setState(() {
@@ -57,15 +64,14 @@ class _FormGemState extends State<FormGem> {
       Gem newGem = Gem();
       newGem.id = Uuid().v4();
       newGem.name = _name;
+      newGem.identifier = _identifier;
       newGem.secret = _secret;
       newGem.imageurl = _imageurl;
       newGem.type = _type_selected;
-      newGem.created_at = DateTime.now();
-      newGem.created_at = DateTime.now();
+      newGem.created_at = DateTime.now().toString();
+      newGem.updated_at = DateTime.now().toString();
 
-      final res = true;
-
-      print(newGem.toJson());
+      final res = await DatabaseGems.createGem(newGem);
 
       Fluttertoast.showToast(
           msg: res ? 'SHHH, new Gem added' : 'Something wrong :(');
@@ -73,18 +79,49 @@ class _FormGemState extends State<FormGem> {
       // update gem
     } else {
       gem!.name = _name;
+      gem!.identifier = _identifier;
       gem!.secret = _secret;
       gem!.imageurl = _imageurl;
       gem!.type = _type_selected;
-      gem!.updated_at = DateTime.now();
+      gem!.updated_at = DateTime.now().toString();
 
-      final res = true;
-
-      print(gem!.toJson());
+      final res = await DatabaseGems.update(gem!);
 
       Fluttertoast.showToast(
-          msg: res ? 'SHHH, new Gem added' : 'Something wrong :(');
+          msg: res ? 'SHHH, Gem updated' : 'Something wrong :(');
     }
+
+    Navigator.pop(context);
+  }
+
+  void getGem() async {
+    Gem? dat = await DatabaseGems.get(widget.id!);
+
+    if (dat == null) {
+      Fluttertoast.showToast(msg: 'Gem not found');
+      return;
+    }
+
+    name_ctrl.text = dat.name!;
+    identifier_ctrl.text = dat.identifier!;
+    secret_ctrl.text = dat.secret!;
+    imageurl_ctrl.text = dat.imageurl!;
+
+    setState(() {
+      gem = dat;
+      _name = dat.name!;
+      _identifier = dat.identifier!;
+      _secret = dat.secret!;
+      _imageurl = dat.imageurl!;
+      _type_selected = dat.type!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.id != null) getGem();
   }
 
   @override
@@ -112,14 +149,46 @@ class _FormGemState extends State<FormGem> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /////// IMAGE VIEW  ///////
-              SizedBox(
-                width: 140,
-                height: 140,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: ImageNetwork(_imageurl, 140, 140)),
-              ),
-              /////// end: IMAGE VIEW ///////
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 140,
+                    height: 140,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: ImageNetwork(_imageurl, 140, 140)),
+                  ),
+
+                  /////// DATE  ///////
+                  if (gem != null)
+                    Expanded(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                          Text('Created At',
+                              style: Theme.of(context).textTheme.bodySmall),
+                          Text(
+                              DateFormat('dd MMMM yyyy, hh:mm')
+                                  .format(DateTime.parse(gem!.created_at!)),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(color: MyColors.BLACK)),
+                          Vertspacing(8),
+                          Text('Updated At',
+                              style: Theme.of(context).textTheme.bodySmall),
+                          Text(
+                              DateFormat('dd MMMM yyyy, hh:mm')
+                                  .format(DateTime.parse(gem!.updated_at!)),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(color: MyColors.BLACK))
+                        ])),
+                ],
+              ), /////// end: IMAGE VIEW ///////
 
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16),
@@ -135,6 +204,7 @@ class _FormGemState extends State<FormGem> {
                         context,
                         'Name',
                         TextField(
+                          maxLength: 32,
                           controller: name_ctrl,
                           onChanged: (val) => validateInput(() {
                             _name = val;
@@ -142,7 +212,28 @@ class _FormGemState extends State<FormGem> {
                           style: Theme.of(context).textTheme.bodyMedium,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
-                              hintText: '...', border: InputBorder.none),
+                              counterText: '',
+                              hintText: '...',
+                              border: InputBorder.none),
+                        )),
+                    SeparatorNoMargin(),
+
+                    /////// INPUT IDENTIFIER ///////
+                    FormGemInput(
+                        context,
+                        'Identifier',
+                        TextField(
+                          maxLength: 32,
+                          controller: identifier_ctrl,
+                          onChanged: (val) => validateInput(() {
+                            _identifier = val;
+                          }),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textInputAction: TextInputAction.next,
+                          decoration: const InputDecoration(
+                              counterText: '',
+                              hintText: '...',
+                              border: InputBorder.none),
                         )),
                     SeparatorNoMargin(),
 
@@ -152,6 +243,7 @@ class _FormGemState extends State<FormGem> {
                         'Secret',
                         TextField(
                           controller: secret_ctrl,
+                          maxLength: 16,
                           onChanged: (val) => validateInput(() {
                             _secret = val;
                           }),
@@ -172,6 +264,7 @@ class _FormGemState extends State<FormGem> {
                                   color: MyColors.PRIMARY,
                                 ),
                               ),
+                              counterText: '',
                               hintText: '...',
                               border: InputBorder.none),
                         )),
@@ -215,6 +308,7 @@ class _FormGemState extends State<FormGem> {
                         'Image URL',
                         TextField(
                           controller: imageurl_ctrl,
+                          maxLength: 500,
                           onChanged: (val) => validateInput(() {
                             _imageurl = val;
                           }),
@@ -223,7 +317,9 @@ class _FormGemState extends State<FormGem> {
                           maxLines: 5,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
-                              hintText: '...', border: InputBorder.none),
+                              counterText: '',
+                              hintText: '...',
+                              border: InputBorder.none),
                         )),
                   ],
                 ),
@@ -235,8 +331,8 @@ class _FormGemState extends State<FormGem> {
                   Expanded(
                       child: ButtonFilled(context, () {
                     if (!positive_button_disabled) submitGem();
-                  }, widget.id == null ? 'Add' : 'Update', MyColors.PRIMARY,
-                          MyColors.WHITE,
+                  }, widget.id == null || gem == null ? 'Add' : 'Update',
+                          MyColors.PRIMARY, MyColors.WHITE,
                           disabled: positive_button_disabled)),
                   Horzspacing(16),
 
@@ -261,7 +357,7 @@ Widget FormGemInput(BuildContext ctx, String fieldName, Widget inputField) {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: 100,
+          width: 120,
           child: Text(
             fieldName,
             style: Theme.of(ctx)

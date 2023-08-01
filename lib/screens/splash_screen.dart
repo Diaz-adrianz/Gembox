@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gemboxapp/screens/home.dart';
+import 'package:gemboxapp/screens/setup.dart';
 import 'package:gemboxapp/themes/color.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class SplashScreen extends StatelessWidget {
       String? keyword = null;
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return keyword == null ? HomePage() : HomePage();
+        return keyword == null ? const SetupPage() : const HomePage();
       }));
     });
 
