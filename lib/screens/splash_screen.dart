@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gemboxapp/screens/home.dart';
 import 'package:gemboxapp/screens/setup.dart';
+import 'package:gemboxapp/services/prefs.dart';
 import 'package:gemboxapp/themes/color.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -12,11 +13,12 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // redirect condition by owner keyword
     Timer(const Duration(seconds: 2), () async {
-      String? keyword = null;
+      String? keyword = await Prefs().read('keywordd');
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return keyword == null ? const SetupPage() : const HomePage();
-      }));
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) =>
+              keyword == null ? const SetupPage() : const HomePage()));
     });
 
     return Container(

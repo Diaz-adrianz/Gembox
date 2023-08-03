@@ -71,7 +71,7 @@ class _FormGemState extends State<FormGem> {
       newGem.created_at = DateTime.now().toString();
       newGem.updated_at = DateTime.now().toString();
 
-      final res = await DatabaseGems.createGem(newGem);
+      final res = await DatabaseGems.create(newGem);
 
       Fluttertoast.showToast(
           msg: res ? 'SHHH, new Gem added' : 'Something wrong :(');
@@ -142,7 +142,7 @@ class _FormGemState extends State<FormGem> {
         child: Container(
           decoration: const BoxDecoration(
               color: MyColors.SURFACE,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+              borderRadius: BorderRadius.all(Radius.circular(16))),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,

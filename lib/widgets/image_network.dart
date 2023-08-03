@@ -24,8 +24,8 @@ Widget ImageNetwork(String url, double width, double height,
         width: width,
         height: height,
         child: const Icon(
-          Remix.emotion_sad_fill,
-          color: MyColors.GRAY,
+          Remix.image_fill,
+          color: MyColors.SILVER,
           size: 64,
         ),
       );

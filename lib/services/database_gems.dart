@@ -30,7 +30,7 @@ class DatabaseGems {
     return Gem.fromJson(raw[0]);
   }
 
-  static Future<bool> createGem(Gem data) async {
+  static Future<bool> create(Gem data) async {
     final db = await DatabaseGems.db();
 
     try {
@@ -57,6 +57,21 @@ class DatabaseGems {
       return true;
     } catch (e) {
       print(e);
+      return false;
+    }
+  }
+
+  static Future<bool> delete(String id) async {
+    final db = await DatabaseGems.db();
+
+    try {
+      final res = await db.delete(table_name, where: 'id = ?', whereArgs: [id]);
+      print(res);
+
+      return true;
+    } catch (e) {
+      print(e);
+
       return false;
     }
   }
