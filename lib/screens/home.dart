@@ -7,6 +7,7 @@ import 'package:gemboxapp/screens/setup.dart';
 import 'package:gemboxapp/services/database_gems.dart';
 import 'package:gemboxapp/services/prefs.dart';
 import 'package:gemboxapp/themes/color.dart';
+import 'package:gemboxapp/themes/theme_color.dart';
 import 'package:gemboxapp/widgets/card_gem.dart';
 import 'package:gemboxapp/widgets/confirmation_dialog.dart';
 import 'package:remixicon/remixicon.dart';
@@ -110,6 +111,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     return WillPopScope(
         onWillPop: () async {
           bool res = await doubleClickExit(_currentBackPressTime);
@@ -123,7 +126,7 @@ class _HomePageState extends State<HomePage> {
           return res;
         },
         child: Scaffold(
-          backgroundColor: MyColors.SURFACE,
+          backgroundColor: clr.SURFACE,
           body: Stack(
             children: [
               RefreshIndicator(
@@ -140,8 +143,8 @@ class _HomePageState extends State<HomePage> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  decoration: const BoxDecoration(
-                      boxShadow: [
+                  decoration: BoxDecoration(
+                      boxShadow: const [
                         BoxShadow(
                           color: Color.fromARGB(20, 0, 0, 0),
                           offset: Offset(0.0, 0.0),
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                           spreadRadius: 3,
                         ), //BoxShadow
                       ],
-                      color: MyColors.WHITE,
+                      color: clr.WHITE,
                       borderRadius: BorderRadius.all(Radius.circular(16))),
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
 
@@ -163,18 +166,18 @@ class _HomePageState extends State<HomePage> {
                         FocusManager.instance.primaryFocus?.unfocus();
                       },
                       decoration: InputDecoration(
-                          prefixIcon: const Icon(
+                          prefixIcon: Icon(
                             Remix.search_2_line,
-                            color: MyColors.GRAY,
+                            color: clr.GRAY,
                           ),
 
                           /////// OPEN FORM BUTTON ///////
                           suffixIcon: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             margin: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                                 border: Border(
-                                    left: BorderSide(color: MyColors.SILVER))),
+                                    left: BorderSide(color: clr.SILVER!))),
                             child: GestureDetector(
                               onTap: () {
                                 showModalBottomSheet(
@@ -186,10 +189,10 @@ class _HomePageState extends State<HomePage> {
                                     builder: (BuildContext context) =>
                                         const FormGem(null));
                               },
-                              child: const Icon(
+                              child: Icon(
                                 Remix.add_fill,
                                 size: 32,
-                                color: MyColors.PRIMARY,
+                                color: clr.PRIMARY,
                               ),
                             ),
                           ),
@@ -198,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                           hintStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium!
-                              .copyWith(color: MyColors.GRAY),
+                              .copyWith(color: clr.GRAY),
                           hintText: "Search here...",
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gemboxapp/models/gem.dart';
 import 'package:gemboxapp/services/database_gems.dart';
-import 'package:gemboxapp/themes/color.dart';
 import 'package:gemboxapp/widgets/button_filled.dart';
 import 'package:gemboxapp/widgets/image_network.dart';
 import 'package:gemboxapp/widgets/spacers.dart';
 import 'package:intl/intl.dart';
 import 'package:remixicon/remixicon.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
+
+import '../themes/theme_color.dart';
 
 class FormGem extends StatefulWidget {
   final String? id;
@@ -62,7 +61,7 @@ class _FormGemState extends State<FormGem> {
     // create gem
     if (widget.id == null) {
       Gem newGem = Gem();
-      newGem.id = Uuid().v4();
+      newGem.id = const Uuid().v4();
       newGem.name = _name;
       newGem.identifier = _identifier;
       newGem.secret = _secret;
@@ -134,15 +133,17 @@ class _FormGemState extends State<FormGem> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: Container(
-          decoration: const BoxDecoration(
-              color: MyColors.SURFACE,
-              borderRadius: BorderRadius.all(Radius.circular(16))),
+          decoration: BoxDecoration(
+              color: clr.SURFACE,
+              borderRadius: const BorderRadius.all(Radius.circular(16))),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -175,7 +176,7 @@ class _FormGemState extends State<FormGem> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
-                                  .copyWith(color: MyColors.BLACK)),
+                                  .copyWith(color: clr.BLACK)),
                           Vertspacing(8),
                           Text('Updated At',
                               style: Theme.of(context).textTheme.bodySmall),
@@ -185,16 +186,16 @@ class _FormGemState extends State<FormGem> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
-                                  .copyWith(color: MyColors.BLACK))
+                                  .copyWith(color: clr.BLACK))
                         ])),
                 ],
               ), /////// end: IMAGE VIEW ///////
 
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16),
-                decoration: const BoxDecoration(
-                    color: MyColors.WHITE,
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                decoration: BoxDecoration(
+                    color: clr.WHITE,
+                    borderRadius: const BorderRadius.all(Radius.circular(16))),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -216,7 +217,7 @@ class _FormGemState extends State<FormGem> {
                               hintText: '...',
                               border: InputBorder.none),
                         )),
-                    SeparatorNoMargin(),
+                    SeparatorNoMargin(clr),
 
                     /////// INPUT IDENTIFIER ///////
                     FormGemInput(
@@ -235,7 +236,7 @@ class _FormGemState extends State<FormGem> {
                               hintText: '...',
                               border: InputBorder.none),
                         )),
-                    SeparatorNoMargin(),
+                    SeparatorNoMargin(clr),
 
                     /////// INPUT SECRET ///////
                     FormGemInput(
@@ -261,14 +262,14 @@ class _FormGemState extends State<FormGem> {
                                   secret_visible
                                       ? Remix.eye_close_fill
                                       : Remix.eye_fill,
-                                  color: MyColors.PRIMARY,
+                                  color: clr.PRIMARY,
                                 ),
                               ),
                               counterText: '',
                               hintText: '...',
                               border: InputBorder.none),
                         )),
-                    SeparatorNoMargin(),
+                    SeparatorNoMargin(clr),
 
                     /////// INPUT TYPE ///////
                     FormGemInput(
@@ -277,9 +278,9 @@ class _FormGemState extends State<FormGem> {
                         DropdownButtonHideUnderline(
                             child: DropdownButton(
                           style: Theme.of(context).textTheme.bodyMedium,
-                          icon: const Icon(
+                          icon: Icon(
                             Remix.arrow_down_s_line,
-                            color: MyColors.BLACK,
+                            color: clr.BLACK,
                           ),
                           items: types.map((String type) {
                             return DropdownMenuItem(
@@ -290,7 +291,7 @@ class _FormGemState extends State<FormGem> {
                                     ? Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
-                                        .copyWith(color: MyColors.PRIMARY)
+                                        .copyWith(color: clr.PRIMARY)
                                     : Theme.of(context).textTheme.bodyMedium,
                               ),
                             );
@@ -300,7 +301,7 @@ class _FormGemState extends State<FormGem> {
                             _type_selected = val!;
                           }),
                         ))),
-                    SeparatorNoMargin(),
+                    SeparatorNoMargin(clr),
 
                     /////// INPUT IMAGE URL ///////
                     FormGemInput(
@@ -332,14 +333,14 @@ class _FormGemState extends State<FormGem> {
                       child: ButtonFilled(context, () {
                     if (!positive_button_disabled) submitGem();
                   }, widget.id == null || gem == null ? 'Add' : 'Update',
-                          MyColors.PRIMARY, MyColors.WHITE,
+                          clr.PRIMARY!, clr.WHITE!,
                           disabled: positive_button_disabled)),
                   Horzspacing(16),
 
                   /////// NEGATIVE BUTTON ///////
                   ButtonFilled(context, () {
                     Navigator.pop(context);
-                  }, 'Back', MyColors.SILVER, MyColors.GRAY)
+                  }, 'Back', clr.SILVER!, clr.GRAY!)
                 ],
               )
             ],
@@ -351,6 +352,8 @@ class _FormGemState extends State<FormGem> {
 }
 
 Widget FormGemInput(BuildContext ctx, String fieldName, Widget inputField) {
+  final ThemeColor clr = Theme.of(ctx).extension<ThemeColor>()!;
+
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
     child: Row(
@@ -360,10 +363,7 @@ Widget FormGemInput(BuildContext ctx, String fieldName, Widget inputField) {
           width: 120,
           child: Text(
             fieldName,
-            style: Theme.of(ctx)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(color: MyColors.GRAY),
+            style: Theme.of(ctx).textTheme.bodyLarge?.copyWith(color: clr.GRAY),
           ),
         ),
         Expanded(child: inputField)

@@ -6,6 +6,7 @@ import 'package:gemboxapp/widgets/spacers.dart';
 import 'package:remixicon/remixicon.dart';
 
 import '../themes/color.dart';
+import '../themes/theme_color.dart';
 
 class CardGem extends StatelessWidget {
   final Gem data;
@@ -31,6 +32,8 @@ class CardGem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
       child: Slidable(
@@ -61,7 +64,7 @@ class CardGem extends StatelessWidget {
                 openGem(context, id: data.id);
               },
               backgroundColor: Colors.transparent,
-              foregroundColor: MyColors.PRIMARY,
+              foregroundColor: clr.PRIMARY,
               icon: Remix.eye_fill,
               label: 'Open',
             )
@@ -69,9 +72,9 @@ class CardGem extends StatelessWidget {
         ),
         child: Container(
           padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              color: MyColors.WHITE),
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              color: clr.WHITE),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +88,8 @@ class CardGem extends StatelessWidget {
                     height: 54,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: ImageNetwork(data.imageurl!, 54, 54),
+                      child: ImageNetwork(data.imageurl!, 54, 54,
+                          errorIconSize: 32.0),
                     ),
                   ),
                   Horzspacing(16),
@@ -108,7 +112,7 @@ class CardGem extends StatelessWidget {
                   ))
                 ],
               ),
-              Separator(),
+              Separator(clr),
 
               /////// GEM SECRET ///////
               Text(

@@ -6,37 +6,37 @@ import 'color.dart';
 class ThemeColor extends ThemeExtension<ThemeColor> {
   //
   const ThemeColor({
-    required this.primary,
-    required this.white,
-    required this.black,
-    required this.silver,
-    required this.gray,
-    required this.surface,
+    required this.PRIMARY,
+    required this.WHITE,
+    required this.BLACK,
+    required this.SILVER,
+    required this.GRAY,
+    required this.SURFACE,
   });
 
-  final Color? primary;
-  final Color? white;
-  final Color? black;
-  final Color? silver;
-  final Color? gray;
-  final Color? surface;
+  final Color? PRIMARY;
+  final Color? WHITE;
+  final Color? BLACK;
+  final Color? SILVER;
+  final Color? GRAY;
+  final Color? SURFACE;
 
   @override
   ThemeExtension<ThemeColor> copyWith({
-    Color? primary,
-    Color? white,
-    Color? black,
-    Color? silver,
-    Color? gray,
-    Color? surface,
+    Color? PRIMARY,
+    Color? WHITE,
+    Color? BLACK,
+    Color? SILVER,
+    Color? GRAY,
+    Color? SURFACE,
   }) {
     return ThemeColor(
-      primary: primary ?? this.primary,
-      white: white ?? this.white,
-      black: black ?? this.black,
-      silver: silver ?? this.silver,
-      gray: gray ?? this.gray,
-      surface: surface ?? this.surface,
+      PRIMARY: PRIMARY ?? this.PRIMARY,
+      WHITE: WHITE ?? this.WHITE,
+      BLACK: BLACK ?? this.BLACK,
+      SILVER: SILVER ?? this.SILVER,
+      GRAY: GRAY ?? this.GRAY,
+      SURFACE: SURFACE ?? this.SURFACE,
     );
   }
 
@@ -46,28 +46,28 @@ class ThemeColor extends ThemeExtension<ThemeColor> {
       return this;
     }
     return ThemeColor(
-      primary: Color.lerp(primary, other.primary, t),
-      white: Color.lerp(white, other.white, t),
-      black: Color.lerp(black, other.black, t),
-      silver: Color.lerp(silver, other.silver, t),
-      gray: Color.lerp(gray, other.gray, t),
-      surface: Color.lerp(surface, other.surface, t),
+      PRIMARY: Color.lerp(PRIMARY, other.PRIMARY, t),
+      WHITE: Color.lerp(WHITE, other.WHITE, t),
+      BLACK: Color.lerp(BLACK, other.BLACK, t),
+      SILVER: Color.lerp(SILVER, other.SILVER, t),
+      GRAY: Color.lerp(GRAY, other.GRAY, t),
+      SURFACE: Color.lerp(SURFACE, other.SURFACE, t),
     );
   }
 
   static const ThemeColor light = ThemeColor(
-      primary: MyColors.PRIMARY,
-      white: MyColors.WHITE,
-      black: MyColors.BLACK,
-      silver: MyColors.SILVER,
-      gray: MyColors.GRAY,
-      surface: MyColors.SURFACE);
+      PRIMARY: MyColors.PRIMARY,
+      WHITE: MyColors.WHITE,
+      BLACK: MyColors.BLACK,
+      SILVER: MyColors.SILVER,
+      GRAY: MyColors.GRAY,
+      SURFACE: MyColors.SURFACE);
 
   static const ThemeColor dark = ThemeColor(
-      primary: MyColors.PRIMARY,
-      white: MyColors.WHITE,
-      black: MyColors.BLACK,
-      silver: MyColors.SILVER,
-      gray: MyColors.GRAY,
-      surface: MyColors.SURFACE);
+      PRIMARY: MyColors.PRIMARY,
+      WHITE: MyColors.WHITE_DARK,
+      BLACK: MyColors.BLACK_DARK,
+      SILVER: MyColors.SILVER_DARK,
+      GRAY: MyColors.GRAY_DARK,
+      SURFACE: MyColors.SURFACE_DARK);
 }

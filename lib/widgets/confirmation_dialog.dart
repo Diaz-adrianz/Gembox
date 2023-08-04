@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gemboxapp/themes/color.dart';
+import 'package:gemboxapp/themes/theme_color.dart';
 import 'package:gemboxapp/widgets/button_naked.dart';
 import 'package:gemboxapp/widgets/spacers.dart';
 
@@ -13,6 +14,8 @@ class ConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     return Dialog(
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.all(16),
@@ -21,9 +24,9 @@ class ConfirmDialog extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                  color: MyColors.WHITE,
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
+              decoration: BoxDecoration(
+                  color: clr.WHITE,
+                  borderRadius: const BorderRadius.all(Radius.circular(16))),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +41,7 @@ class ConfirmDialog extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  Separator(),
+                  Separator(clr),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -62,7 +65,7 @@ class ConfirmDialog extends StatelessWidget {
                           Navigator.of(context).pop(true);
                         },
                         'Yes',
-                        MyColors.PRIMARY,
+                        clr.PRIMARY!,
                       )),
                     ],
                   )

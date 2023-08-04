@@ -6,11 +6,15 @@ import 'package:gemboxapp/screens/setup.dart';
 import 'package:gemboxapp/services/prefs.dart';
 import 'package:gemboxapp/themes/color.dart';
 
+import '../themes/theme_color.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     // redirect condition by owner keyword
     Timer(const Duration(seconds: 2), () async {
       String? keyword = await Prefs().read('keywordd');
@@ -22,7 +26,7 @@ class SplashScreen extends StatelessWidget {
     });
 
     return Container(
-      color: MyColors.PRIMARY,
+      color: clr.PRIMARY,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -38,7 +42,7 @@ class SplashScreen extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .headlineLarge!
-                  .copyWith(color: MyColors.WHITE),
+                  .copyWith(color: clr.WHITE),
             )
           ],
         ),

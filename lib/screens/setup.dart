@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gemboxapp/helpers/double_click_exit.dart';
 import 'package:gemboxapp/screens/home.dart';
 import 'package:gemboxapp/services/prefs.dart';
+import 'package:gemboxapp/themes/theme_color.dart';
 import 'package:gemboxapp/widgets/spacers.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,6 +104,8 @@ class _SetupPageState extends State<SetupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColor clr = Theme.of(context).extension<ThemeColor>()!;
+
     return WillPopScope(
         onWillPop: () async {
           bool res = await doubleClickExit(_currentBackPressTime);
@@ -149,14 +152,14 @@ class _SetupPageState extends State<SetupPage> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(color: MyColors.GRAY)),
+                                  .copyWith(color: clr.GRAY)),
                           TextSpan(
                               text: 'User Guide',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                      color: MyColors.PRIMARY,
+                                      color: clr.PRIMARY,
                                       decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
@@ -174,8 +177,8 @@ class _SetupPageState extends State<SetupPage> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  decoration: const BoxDecoration(
-                      boxShadow: [
+                  decoration: BoxDecoration(
+                      boxShadow: const [
                         BoxShadow(
                           color: Color.fromARGB(20, 0, 0, 0),
                           offset: Offset(0.0, 0.0),
@@ -183,8 +186,9 @@ class _SetupPageState extends State<SetupPage> {
                           spreadRadius: 3,
                         ), //BoxShadow
                       ],
-                      color: MyColors.WHITE,
-                      borderRadius: BorderRadius.all(Radius.circular(16))),
+                      color: clr.WHITE,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(16))),
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
 
                   /////// KEYWORD INPUT ///////
@@ -205,8 +209,8 @@ class _SetupPageState extends State<SetupPage> {
                                   .bodyLarge!
                                   .copyWith(
                                       color: _button_disable
-                                          ? MyColors.GRAY
-                                          : MyColors.PRIMARY),
+                                          ? clr.GRAY
+                                          : clr.PRIMARY),
                             ),
                           ),
                           /////// end: SUBMIT BUTTON ///////
@@ -214,7 +218,7 @@ class _SetupPageState extends State<SetupPage> {
                           hintStyle: Theme.of(context)
                               .textTheme
                               .bodyMedium!
-                              .copyWith(color: MyColors.GRAY),
+                              .copyWith(color: clr.GRAY),
                           hintText: _hint,
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),

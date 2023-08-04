@@ -4,7 +4,7 @@ import 'package:gemboxapp/themes/color.dart';
 import 'package:remixicon/remixicon.dart';
 
 Widget ImageNetwork(String url, double width, double height,
-    {BoxFit fit = BoxFit.cover}) {
+    {BoxFit fit = BoxFit.cover, double errorIconSize = 64.0}) {
   return Image.network(
     url,
     fit: BoxFit.cover,
@@ -23,10 +23,10 @@ Widget ImageNetwork(String url, double width, double height,
       return SizedBox(
         width: width,
         height: height,
-        child: const Icon(
+        child: Icon(
           Remix.image_fill,
           color: MyColors.SILVER,
-          size: 64,
+          size: errorIconSize,
         ),
       );
     },

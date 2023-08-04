@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gemboxapp/themes/color.dart';
+import 'package:gemboxapp/themes/theme_color.dart';
 
-Widget Separator() {
+Widget Separator(ThemeColor clr) {
   return Container(
     height: 1,
     margin: const EdgeInsets.symmetric(vertical: 16),
-    color: MyColors.SILVER,
+    color: clr.SILVER,
   );
 }
 
-Widget SeparatorNoMargin() {
+Widget SeparatorNoMargin(ThemeColor clr) {
   return Container(
     height: 1,
-    color: MyColors.SILVER,
+    color: clr.SILVER,
   );
 }
 
